@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "
 ##### Update package #####"
 sudo apt update -y
@@ -10,34 +12,32 @@ echo "
 ##### Check version java #####"
 java -version
 
-echo "
-##### Start and enable apache2.service #####"
+# Start and enable Apache2
+echo "Starting and enabling Apache2..."
 sudo systemctl start apache2
 sudo systemctl enable apache2
 
-echo "
-##### Download apache-jmeter-5.6.3 #####"
+# Download and install Apache JMeter
+echo "Downloading Apache JMeter..."
 cd ~
 wget https://downloads.apache.org//jmeter/binaries/apache-jmeter-5.6.3.tgz
 
 echo "
 ##### Extract apache-jmeter-5.6.3 to $HOME/jmeter #####"
+echo "Installing Apache JMeter..."
 mkdir $HOME/jmeter $HOME/jmeter/backups
 tar -xvzf apache-jmeter-5.6.3.tgz -C $HOME/jmeter --strip-components=1
 chmod +x $HOME/jmeter/bin/jmeter
 rm -rf apache-jmeter-5.6.3.tgz
 
-echo "
-##### Export path for $HOME/jmeter/bin #####"
-tee -a ~/.bashrc <<< \
-'
-export PATH="$PATH:$HOME/jmeter/bin"'
+# Update PATH in .bashrc
+echo "Adding JMeter to PATH..."
+echo 'export PATH="$PATH:$HOME/jmeter/bin"' | tee -a ~/.bashrc
 source ~/.bashrc
 
-echo "
-##### Create desktop application #####"
-sudo tee -a /usr/share/applications/jmeter.desktop <<< \
-'
+# Create JMeter desktop shortcut
+echo "Creating JMeter desktop shortcut..."
+sudo tee /usr/share/applications/jmeter.desktop > /dev/null <<EOL
 [Desktop Entry]
 Name=JMeter
 Comment=Apache JMeter v5.6.3
@@ -55,8 +55,10 @@ Keywords=jmeter;
 Name=New Window
 Name[ru]=Новое окно
 Exec=$HOME/jmeter/bin/jmeter --new-window %F
-Icon=jmeter'
+Icon=jmeter
+EOL
 
-echo "
-##### Start UI: jmeter or alt+F2 -> JMeter in Applications
-Start CLI: jmeter -n -t your_test_plan.jmx -l results.jtl"
+echo "JMeter installation complete.
+##### To run:
+- GUI: Type 'jmeter' in the terminal or search for 'JMeter' in applications.
+- CLI: Use 'jmeter -n -t your_test_plan.jmx -l results.jtl' for command-line mode."
